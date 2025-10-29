@@ -42,17 +42,32 @@
     nav {
       display: flex;
       gap: 20px;
+      position: relative;
     }
 
     nav a {
       color: #fff;
       text-decoration: none;
       font-weight: normal;
-      transition: font-weight 0.2s, transform 0.3s;
+      position: relative;
+      padding: 5px 0;
+      transition: font-weight 0.2s;
     }
 
     nav a.active {
       font-weight: bold;
+    }
+
+    /* Scroll spy underline */
+    nav::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #ffcc00;
+      transition: left 0.3s, width 0.3s;
     }
 
     /* Hamburger Menu */
@@ -94,6 +109,10 @@
 
       .hamburger {
         display: flex;
+      }
+
+      nav::after {
+        display: none; /* hide underline on mobile */
       }
     }
 
@@ -196,14 +215,34 @@
     const navLinks = nav.querySelectorAll('a');
     const header = document.getElementById('header');
     const sections = document.querySelectorAll('section');
+    const underline = nav; // we'll use nav::after
 
-    // Toggle mobile menu
+    // Hamburger toggle
     hamburger.addEventListener('click', () => {
       nav.classList.toggle('show');
       hamburger.classList.toggle('open');
     });
 
-    // Highlight active section in menu
+    // Smooth scroll & active menu
+    navLinks.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').slice(1);
+        const targetSection = document.getElementById(targetId);
+        const yOffset = -50; // adjust for header height
+        const y = targetSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+        window.scrollTo({ top: y, behavior: 'smooth' });
+
+        // Close menu on mobile
+        if(nav.classList.contains('show')) {
+          nav.classList.remove('show');
+          hamburger.classList.remove('open');
+        }
+      });
+    });
+
+    // Scroll spy with underline
     window.addEventListener('scroll', () => {
       let current = '';
       sections.forEach(section => {
@@ -217,10 +256,18 @@
         link.classList.remove('active');
         if(link.getAttribute('href') === '#' + current) {
           link.classList.add('active');
+
+          // Animate underline
+          const linkRect = link.getBoundingClientRect();
+          const navRect = nav.getBoundingClientRect();
+          const underlineEl = nav;
+
+          underlineEl.style.setProperty('--underline-left', `${link.offsetLeft}px`);
+          underlineEl.style.setProperty('--underline-width', `${link.offsetWidth}px`);
         }
       });
 
-      // Add shadow to header when scrolling
+      // Shadow on scroll
       if(window.scrollY > 20) {
         header.classList.add('scrolled');
       } else {
@@ -228,15 +275,21 @@
       }
     });
 
-    // Close menu on link click (mobile)
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        if(nav.classList.contains('show')) {
-          nav.classList.remove('show');
-          hamburger.classList.remove('open');
-        }
-      });
-    });
   </script>
+
+  <style>
+    /* Dynamic underline for desktop */
+    nav::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: var(--underline-width, 0);
+      height: 2px;
+      background: #ffcc00;
+      transition: left 0.3s, width 0.3s;
+      left: var(--underline-left, 0);
+    }
+  </style>
 </body>
 </html>
