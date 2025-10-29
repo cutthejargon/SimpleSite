@@ -64,10 +64,11 @@
       position: absolute;
       bottom: 0;
       left: 0;
-      width: 0;
+      width: var(--underline-width, 0);
       height: 2px;
       background: #ffcc00;
       transition: left 0.3s, width 0.3s;
+      left: var(--underline-left, 0);
     }
 
     /* Hamburger Menu */
@@ -135,13 +136,14 @@
       justify-content: center;
       align-items: center;
       transition: background 0.5s;
+      position: relative;
     }
 
-    section:nth-child(odd) {
+    section:nth-child(odd):not(#home) {
       background: #f4f4f4;
     }
 
-    section:nth-child(even) {
+    section:nth-child(even):not(#home) {
       background: #ddd;
     }
 
@@ -171,6 +173,36 @@
         transform: translateX(0);
       }
     }
+
+    /* Video background for Home */
+    #home {
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    #home .bg-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+    }
+
+    #home .home-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+      padding: 60px 20px 20px 20px;
+    }
   </style>
 </head>
 <body>
@@ -190,8 +222,14 @@
   </header>
 
   <section id="home">
-    <h1>Home</h1>
-    <p>Welcome to our website! Scroll down to explore.</p>
+    <video autoplay muted loop playsinline class="bg-video">
+      <source src="dub.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="home-content">
+      <h1>Home</h1>
+      <p>Welcome to our website! Scroll down to explore.</p>
+    </div>
   </section>
 
   <section id="about">
@@ -215,7 +253,6 @@
     const navLinks = nav.querySelectorAll('a');
     const header = document.getElementById('header');
     const sections = document.querySelectorAll('section');
-    const underline = nav; // we'll use nav::after
 
     // Hamburger toggle
     hamburger.addEventListener('click', () => {
@@ -256,7 +293,6 @@
         link.classList.remove('active');
         if(link.getAttribute('href') === '#' + current) {
           link.classList.add('active');
-
           // Animate underline
           const linkRect = link.getBoundingClientRect();
           const navRect = nav.getBoundingClientRect();
@@ -274,22 +310,6 @@
         header.classList.remove('scrolled');
       }
     });
-
   </script>
-
-  <style>
-    /* Dynamic underline for desktop */
-    nav::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: var(--underline-width, 0);
-      height: 2px;
-      background: #ffcc00;
-      transition: left 0.3s, width 0.3s;
-      left: var(--underline-left, 0);
-    }
-  </style>
 </body>
 </html>
