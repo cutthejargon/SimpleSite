@@ -27,6 +27,11 @@
       align-items: center;
       padding: 10px 20px;
       z-index: 1000;
+      transition: box-shadow 0.3s;
+    }
+
+    header.scrolled {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
 
     .logo {
@@ -43,7 +48,7 @@
       color: #fff;
       text-decoration: none;
       font-weight: normal;
-      transition: font-weight 0.2s;
+      transition: font-weight 0.2s, transform 0.3s;
     }
 
     nav a.active {
@@ -55,13 +60,18 @@
       display: none;
       flex-direction: column;
       cursor: pointer;
-      gap: 4px;
+      gap: 5px;
+      width: 25px;
+      height: 20px;
+      justify-content: space-between;
     }
 
-    .hamburger div {
-      width: 25px;
+    .hamburger span {
+      display: block;
       height: 3px;
       background: #fff;
+      border-radius: 2px;
+      transition: all 0.3s ease;
     }
 
     /* Mobile */
@@ -69,12 +79,13 @@
       nav {
         position: fixed;
         top: 60px;
-        right: -100%;
+        right: -250px;
         background: #333;
         flex-direction: column;
         width: 200px;
-        transition: right 0.3s;
+        transition: right 0.3s ease;
         padding: 20px;
+        gap: 15px;
       }
 
       nav.show {
@@ -86,9 +97,25 @@
       }
     }
 
+    /* Hamburger animation for X */
+    .hamburger.open span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
     section {
       height: 100vh;
       padding: 60px 20px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.5s;
     }
 
     section:nth-child(odd) {
@@ -101,11 +128,34 @@
 
     h1 {
       margin-bottom: 20px;
+      font-size: 2.5rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    /* Menu slide animation */
+    nav.show a {
+      animation: slideIn 0.3s ease forwards;
+    }
+
+    @keyframes slideIn {
+      0% {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
   </style>
 </head>
 <body>
-  <header>
+  <header id="header">
     <div class="logo">Logo</div>
     <nav id="nav">
       <a href="#home">Home</a>
@@ -114,52 +164,46 @@
       <a href="#contact">Contact</a>
     </nav>
     <div class="hamburger" id="hamburger">
-      <div></div>
-      <div></div>
-      <div></div>
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
   </header>
 
   <section id="home">
     <h1>Home</h1>
-    <p>Welcome to our website!</p>
+    <p>Welcome to our website! Scroll down to explore.</p>
   </section>
 
   <section id="about">
     <h1>About</h1>
-    <p>About us content goes here.</p>
+    <p>About us content goes here. We are passionate about creating smooth user experiences.</p>
   </section>
 
   <section id="services">
     <h1>Services</h1>
-    <p>Our services are amazing.</p>
+    <p>Our services include web development, design, and more.</p>
   </section>
 
   <section id="contact">
     <h1>Contact</h1>
-    <p>Get in touch with us.</p>
+    <p>Get in touch with us through email or phone.</p>
   </section>
 
   <script>
     const hamburger = document.getElementById('hamburger');
     const nav = document.getElementById('nav');
     const navLinks = nav.querySelectorAll('a');
+    const header = document.getElementById('header');
+    const sections = document.querySelectorAll('section');
 
     // Toggle mobile menu
     hamburger.addEventListener('click', () => {
       nav.classList.toggle('show');
-      // Change hamburger to X
       hamburger.classList.toggle('open');
-      if(hamburger.classList.contains('open')) {
-        hamburger.innerHTML = '<div style="transform: rotate(45deg) translate(5px, 5px);"></div><div style="display:none;"></div><div style="transform: rotate(-45deg) translate(6px, -6px);"></div>';
-      } else {
-        hamburger.innerHTML = '<div></div><div></div><div></div>';
-      }
     });
 
     // Highlight active section in menu
-    const sections = document.querySelectorAll('section');
-
     window.addEventListener('scroll', () => {
       let current = '';
       sections.forEach(section => {
@@ -175,6 +219,13 @@
           link.classList.add('active');
         }
       });
+
+      // Add shadow to header when scrolling
+      if(window.scrollY > 20) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
     });
 
     // Close menu on link click (mobile)
@@ -183,7 +234,6 @@
         if(nav.classList.contains('show')) {
           nav.classList.remove('show');
           hamburger.classList.remove('open');
-          hamburger.innerHTML = '<div></div><div></div><div></div>';
         }
       });
     });
