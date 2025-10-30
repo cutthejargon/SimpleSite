@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Single Page Website</title>
+  <link rel="icon" type="image/png" href="icon.png">
   <style>
     /* Reset */
     * {
@@ -37,6 +38,17 @@
     .logo {
       font-size: 20px;
       font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-img {
+      width: 32px;
+      height: 32px;
+      object-fit: cover;
+      border-radius: 4px;
+      display: inline-block;
     }
 
     nav {
@@ -282,7 +294,7 @@
 </head>
 <body>
   <header id="header">
-    <div class="logo">Logo</div>
+    <div class="logo"><img src="icon.png" alt="Logo" class="logo-img"><span>Logo</span></div>
     <nav id="nav">
       <a href="#home">Home</a>
       <a href="#about">About</a>
