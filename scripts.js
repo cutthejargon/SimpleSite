@@ -10,12 +10,14 @@ hamburger.addEventListener('click', () => {
   hamburger.classList.toggle('open');
 });
 
-// Smooth scroll & active menu
-navLinks.forEach(link => {
-  link.addEventListener('click', e => {
+// Smooth scroll helper used by nav links and other in-page links
+function smoothScrollToHref(linkEl) {
+  linkEl.addEventListener('click', e => {
     e.preventDefault();
-    const targetId = link.getAttribute('href').slice(1);
+    const href = linkEl.getAttribute('href') || '';
+    const targetId = href.replace(/^#/, '');
     const targetSection = document.getElementById(targetId);
+    if (!targetSection) return;
     const yOffset = -50; // adjust for header height
     const y = targetSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
 
@@ -27,7 +29,14 @@ navLinks.forEach(link => {
       hamburger.classList.remove('open');
     }
   });
-});
+}
+
+// Attach to nav links
+navLinks.forEach(link => smoothScrollToHref(link));
+
+// Attach to other in-page links marked with .scroll (e.g., Get in touch)
+const scrollLinks = document.querySelectorAll('a.scroll');
+scrollLinks.forEach(link => smoothScrollToHref(link));
 
 // Scroll spy with underline
 window.addEventListener('scroll', () => {
