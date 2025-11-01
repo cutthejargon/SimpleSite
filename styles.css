@@ -139,6 +139,125 @@ nav::after {
   }
 }
 
+/* Services carousel */
+.services-carousel {
+  width: 100%;
+  max-width: 1000px;
+  margin: 30px 20px 0 20px;
+  position: relative;
+}
+
+.slides-viewport {
+  overflow: hidden;
+}
+
+.slides {
+  display: flex;
+  transition: transform 0.5s ease;
+  will-change: transform;
+}
+
+.slide {
+  display: flex;
+  width: 100%;
+  min-width: 100%;
+  gap: 30px;
+  align-items: center;
+}
+
+.slide .slide-image,
+.slide .slide-text {
+  flex: 1 1 50%;
+}
+
+.slide .slide-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide img {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.slide .slide-text h2 {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.slide .slide-text p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  text-align: left;
+  max-width: 520px;
+}
+
+.slide.reverse {
+  flex-direction: row-reverse;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20; /* ensure buttons sit above slides */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.carousel-btn.prev { left: -36px; }
+.carousel-btn.next { right: -36px; }
+
+.carousel-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.carousel-dots button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.25);
+  cursor: pointer;
+}
+
+.carousel-dots button.active {
+  background: #333;
+}
+
+@media (max-width: 768px) {
+  /* Stack slide content on mobile and remove reverse layout for better flow */
+  .slide {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .slide.reverse {
+    flex-direction: column;
+  }
+
+  .carousel-btn.prev { left: 12px; }
+  .carousel-btn.next { right: 12px; }
+  .carousel-btn { width: 40px; height: 40px; }
+}
+
 /* Hamburger animation for X */
 .hamburger.open span:nth-child(1) {
   transform: rotate(45deg) translate(5px, 5px);

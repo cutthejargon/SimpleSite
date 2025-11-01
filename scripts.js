@@ -80,3 +80,87 @@ window.addEventListener('scroll', () => {
     header.classList.remove('scrolled');
   }
 });
+
+  // --- Services carousel script ---
+  document.addEventListener('DOMContentLoaded', () => {
+    const carousel = document.querySelector('.services-carousel');
+    if (!carousel) return;
+
+    const slidesEl = carousel.querySelector('.slides');
+    const slides = Array.from(carousel.querySelectorAll('.slide'));
+    const prevBtn = carousel.querySelector('.carousel-btn.prev');
+    const nextBtn = carousel.querySelector('.carousel-btn.next');
+    const dotsContainer = carousel.querySelector('.carousel-dots');
+
+    let index = 0;
+
+    // create dots
+    slides.forEach((s, i) => {
+      const btn = document.createElement('button');
+      btn.setAttribute('aria-label', `Slide ${i + 1}`);
+      btn.addEventListener('click', () => goTo(i));
+      dotsContainer.appendChild(btn);
+    });
+
+    const dots = Array.from(dotsContainer.querySelectorAll('button'));
+
+    function update() {
+      const offset = -index * carousel.querySelector('.slides-viewport').offsetWidth;
+      slidesEl.style.transform = `translateX(${offset}px)`;
+      dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    }
+
+    function goTo(i) {
+      index = (i + slides.length) % slides.length;
+      update();
+    }
+
+    prevBtn.addEventListener('click', () => goTo(index - 1));
+    nextBtn.addEventListener('click', () => goTo(index + 1));
+
+    // Autoplay every 5 seconds, pause on hover/focus or when page hidden
+    let autoplayInterval = 5000;
+    let autoplayTimer = null;
+
+    function startAutoplay() {
+      stopAutoplay();
+      autoplayTimer = setInterval(() => goTo(index + 1), autoplayInterval);
+    }
+
+    function stopAutoplay() {
+      if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    }
+
+    // Pause when user hovers or focuses the carousel
+    carousel.addEventListener('mouseenter', stopAutoplay);
+    carousel.addEventListener('mouseleave', startAutoplay);
+    carousel.addEventListener('focusin', stopAutoplay);
+    carousel.addEventListener('focusout', startAutoplay);
+
+    // Pause when tab is not visible
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAutoplay(); else startAutoplay();
+    });
+
+    // Start autoplay
+    startAutoplay();
+
+    // keyboard support
+    carousel.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevBtn.click();
+      if (e.key === 'ArrowRight') nextBtn.click();
+    });
+
+    // resize handler to keep current slide aligned
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(update, 120);
+    });
+
+    // init
+    goTo(0);
+  });
